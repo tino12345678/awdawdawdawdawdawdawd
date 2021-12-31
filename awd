@@ -1,0 +1,447 @@
+repeat wait() until game:IsLoaded()
+
+local LB_MODULE = {}
+
+do
+	local getService = function(name)
+		repeat wait() until game:GetService(name) ~= nil
+		return game:GetService(name)
+	end
+	
+	local sendNotification = function(title, content)
+		getService('StarterGui'):SetCore('SendNotification', {
+			Title = title or 'No Title';
+			Text = content or 'No Content';
+		})
+	end
+	
+	local Main = {
+		Services = {
+			['CoreGui'] = getService('CoreGui');
+			['Players'] = getService('Players');
+			['ReplicatedStorage'] = getService('ReplicatedStorage');
+			['RunService'] = getService('RunService');
+			['UserInputService'] = getService('UserInputService');
+			['Workspace'] = getService('Workspace');
+		};
+	
+		REQUIRED = {
+			['getgenv'] = pcall(function()return getgenv end) and getgenv;
+			-- ['Drawing'] = pcall(function()return Drawing end) and Drawing;
+		};
+	
+		MISSING = {};
+	
+		COLOR = {
+			WINDOW = Color3.fromRGB(40,40,40);
+			WINDOW_CLOSED = Color3.fromRGB(80, 0, 140);
+			WINDOW_OPENED = Color3.fromRGB(0, 0, 140);
+			TEXT = Color3.fromRGB(180,180,180);
+			BUTTONBG = Color3.fromRGB(60,60,60);
+			BUTTONTEXT = Color3.fromRGB(180,180,180);
+			SELECTEDBG = Color3.fromRGB(80,80,80);
+			SELECTEDTEXT = Color3.fromRGB(200,200,200);
+			TITLEBAR = Color3.fromRGB(30,30,30);
+		}
+	}
+
+	for a,b in next, Main.REQUIRED do
+		if not b then
+			table.insert(Main.MISSING, a)
+		end
+	end
+
+	if #Main.MISSING ~= 0 then
+		sendNotification('[UI LIB] Missing Feature(s)', table.concat(Main.MISSING, ', '))
+		script:Destroy()
+		return nil
+	end
+
+	if getgenv().LBConnections and typeof(getgenv().LBConnections) == 'table' then
+		for a,b in next, getgenv().LBConnections do
+			b:Disconnect()
+		end
+	end
+
+	for a,b in next, Main.Services.CoreGui:children() do
+		if string.find(b.Name, 'LB UI Library') then
+			b:Destroy()
+		end
+	end
+
+	if getgenv().UILibrary_Loading then return nil end
+	getgenv().UILibrary_Loading = true
+
+	if Drawing then
+		local draw = Drawing.new('Square')
+		draw.Size = Vector2.new(0,0)
+		draw.Color = Color3.fromRGB(20,20,20)
+		draw.Transparency = 1
+		draw.Filled = true
+		draw.Visible = true
+		for i=0,100,1 do
+			Main.Services.RunService.RenderStepped:wait()
+			draw.Position = Vector2.new(
+				(workspace.CurrentCamera.ViewportSize.X / 2) - i,
+				(workspace.CurrentCamera.ViewportSize.Y / 2) - i
+			)
+			draw.Size = Vector2.new(draw.Size.X+2,draw.Size.Y+2)
+		end
+
+		draw.Transparency = 1
+		local text = Drawing.new('Text')
+		text.Text = 'Dogewater\nis\nloading\nplease\nwait'
+		text.Center = true
+		text.Color = Color3.fromRGB(255,255,255)
+		text.Size = 30
+		text.Position = Vector2.new(
+			(workspace.CurrentCamera.ViewportSize.X / 2),
+			(workspace.CurrentCamera.ViewportSize.Y / 2)-92
+		)
+		text.Transparency = 0
+		text.Visible = true
+		for i=0,1,.01 do
+			Main.Services.RunService.RenderStepped:wait()
+			text.Transparency = i
+		end
+		text.Transparency = 1
+		wait(1)
+		for i=1,0,-.01 do
+			Main.Services.RunService.RenderStepped:wait()
+			text.Transparency = i
+		end
+		for i=100,0,-1 do
+			Main.Services.RunService.RenderStepped:wait()
+			draw.Position = Vector2.new(
+				(workspace.CurrentCamera.ViewportSize.X / 2) - i,
+				(workspace.CurrentCamera.ViewportSize.Y / 2) - i
+			)
+			draw.Size = Vector2.new(draw.Size.X-2,draw.Size.Y-2)
+		end
+		draw:Remove()
+		text:Remove()
+	end
+    wait(3)
+    local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+    local Window = Library.CreateLib("DogWater.xyz v2", "Serpent")
+        
+
+    local Main = Window:NewTab("Aimlock")
+    local MainSection = Main:NewSection("Aimlock")
+    
+    MainSection:NewButton("Lock(q) and silent", "Silent aim lock", function(v)
+        loadstring(game:HttpGet("https://pastebin.com/raw/L96cDMMb"))()
+    end)
+
+    MainSection:NewLabel("Lock settings", "hii", function()
+    end)
+
+    MainSection:NewSlider("FOV CIRCLE", "Slide lock", 200, 1, function(v)
+        Aiming.FOV = v
+    end)
+
+    MainSection:NewSlider("Hitchance", "changes hitchance", 100, 1, function(v)
+        Aiming.HitChance = v
+    end)
+
+    MainSection:NewTextBox("Aimlock prediction", "Prediction 0.165-0.167 best preicrions", function(txt)
+        DaHoodSettings.Prediction = txt
+    end)
+    MainSection:NewButton("Unshow fov", "unshow fov", function()
+        Aiming.ShowFOV = false
+    end)
+    MainSection:NewButton("Show fov", "show fov", function()
+        Aiming.ShowFOV = true
+    end)
+
+    local player = Window:NewTab("Player")
+    local playerSection = player:NewSection("Player")
+    playerSection:NewButton("Fly(z)", "fly", function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/KHLhNmH7"))()
+    end)
+
+    playerSection:NewButton("AntiStomp", "Antistomps", function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/SpfW1zL1"))()
+	end)
+
+    playerSection:NewButton("Speed Glitch(x)", "SpeedGlitch", function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/9fpMEZCs"))()
+    end)
+
+    playerSection:NewButton("FistReach", "yessir", function()
+        LP = game.Players.LocalPlayer
+		for i,v in ipairs(LP.Character:GetDescendants()) do
+			if v:IsA("MeshPart") then v.Massless = true
+				v.CanCollide = false
+				v.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0)
+	
+			end
+		end
+	
+		for i,v in ipairs(game.workspace:GetDescendants()) do
+			if v:IsA("Seat") then 
+				v.Disabled = true
+			end
+		end
+		x = 80
+		y = 80
+		z = 80
+	
+	
+		penis = Vector3.new(x,y,z)
+	
+		LP.Character.RightHand.Size = penis
+	
+		LP.Character.RightHand.Transparency = 1
+		local selectionBox = Instance.new("SelectionBox",LP.Character.RightHand)
+		selectionBox.Adornee = LP.Character.RightHand
+		selectionBox.Color3 = Color3.new(0, 0.666667, 1)
+	end)
+    
+    playerSection:NewButton("FreeFist(f)", "yes", function()
+        local localPlayer       = game:GetService("Players").LocalPlayer;
+		local localCharacter    = localPlayer.Character
+		local Mouse             = localPlayer:GetMouse();
+		local FistControl       = false
+		local LeftFist          = localCharacter.LeftHand;
+		local RightFist         = localCharacter.RightHand;
+	
+		-- // Services
+		local uis = game:GetService("UserInputService");
+	
+		-- // Coroutine Loop + Functions
+		local loopFunction = function()
+			LeftFist.CFrame  = CFrame.new(Mouse.Hit.p);
+			RightFist.CFrame = CFrame.new(Mouse.Hit.p);
+		end;
+	
+		local Loop
+	
+		local Start = function()
+			Loop = game:GetService("RunService").Heartbeat:Connect(loopFunction);
+		end;
+	
+		local Pause = function()
+			Loop:Disconnect()
+		end;
+	
+		-- // Hotkeys
+		uis.InputBegan:connect(function(Key)
+			if (Key.KeyCode == Enum.KeyCode.F) then
+				if (FistControl == false) then
+					FistControl = true;
+					Start();
+					pcall(function()
+						localCharacter.RightHand.RightWrist:Remove();
+						localCharacter.LeftHand.LeftWrist:Remove();
+					end);
+				elseif (FistControl == true) then
+					FistControl = false;
+					Pause();
+					local rightwrist  = Instance.new("Motor6D");
+					rightwrist.Name   = "RightWrist";
+					rightwrist.Parent = localCharacter.RightHand;
+					rightwrist.C0     = CFrame.new(1.18422506e-07, -0.5009287, -6.81715525e-18, 1, 0, 0, 0, 1, 0, 0, 0, 1);
+					rightwrist.C1     = CFrame.new(3.55267503e-07, 0.125045404, 5.92112528e-08, 1, 0, 0, 0, 1, 0, 0, 0, 1);
+					rightwrist.Part0  = localCharacter.RightLowerArm;
+					rightwrist.Part1  = localCharacter.RightHand;
+	
+					local leftwrist   = Instance.new("Motor6D");
+					leftwrist.Name    = "LeftWrist";
+					leftwrist.Parent  = localCharacter.LeftHand;
+					leftwrist.C0      = CFrame.new(0.000475466368, -0.5009287, 7.59417072e-20, 1, 0, 0, 0, 1, 0, 0, 0, 1);
+					leftwrist.C1      = CFrame.new(0.000475821638, 0.125045404, 5.92112528e-08, 1, 0, 0, 0, 1, 0, 0, 0, 1);
+					leftwrist.Part0   = localCharacter.LeftLowerArm;
+					leftwrist.Part1   = localCharacter.LeftHand;
+				end;
+			end;
+		end);
+	end)
+
+    playerSection:NewButton("Unjail", "Unjail", function()
+        local plr = game.Players.LocalPlayer
+		if plr.DataFolder.Currency.Value >= 125 then
+			plr.Character.HumanoidRootPart.CFrame = CFrame.new(-270.94, 20.327, -242.38)--Key
+			plr.Character.HumanoidRootPart.CFrame = CFrame.new(-270.94, 20.327, -242.38)--Key(Backup)
+			wait()
+			fireclickdetector(game:GetService("Workspace").Ignored.Shop["[Key] - $125"].ClickDetector)
+			wait(.1)
+			fireclickdetector(game:GetService("Workspace").Ignored.Shop["[Key] - $125"].ClickDetector)
+			fireclickdetector(game:GetService("Workspace").Ignored.Shop["[Key] - $125"].ClickDetector)
+			repeat wait() until plr.Backpack:FindFirstChild('[Key]')
+			local Hum = plr.Character:FindFirstChildOfClass('Humanoid')
+			if Hum.Health > 0 then
+				key1 = plr.Backpack:FindFirstChild('[Key]')
+				if key1 then
+					Hum:EquipTool(key1)
+					for i,v in pairs(game:GetService'Players'.LocalPlayer.Character:GetChildren())do
+						if v:isA("Tool") then
+							plr.Character.Humanoid:EquipTool(key1)
+							plr.Character.HumanoidRootPart.CFrame = CFrame.new(-485.668, 23.631, -285.169)--Bank
+							v:Activate()
+						elseif plr.DataFolder.Currency.Value < 125 then
+							print('Not Enough Cash (Requied 125$)')	
+							wait(1)
+						end
+					end
+				end
+			end
+		end
+	end)
+
+
+    playerSection:NewButton("GodMode(need to rejoin to be normal, need to buy new weapons)", "pe", function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/ec32x80f"))()
+        wait(10)
+        local name = game.Players.LocalPlayer.Name
+		game.Players.LocalPlayer.Character.Humanoid.Health = 0
+		game.Players.LocalPlayer.Character:ClearAllChildren()
+		local lol =    game.Workspace:WaitForChild(name)
+		local money = Instance.new("Folder",game.Players.LocalPlayer.Character);money.Name = "FULLY_LOADED_CHAR"
+		lol.Parent = game.Workspace.Players
+		game.Players.LocalPlayer.Character:WaitForChild("BodyEffects")
+		game.Players.LocalPlayer.Character.BodyEffects.BreakingParts:Destroy()
+	end)
+
+    
+        
+
+
+    
+
+    
+   
+        
+
+
+    local Player = Window:NewTab("FOV")
+    local PlayerSection = Player:NewSection("FOV SLIDER click the three dots for more info")
+    PlayerSection:NewSlider("fov slider", "120 for professional fov 70 for normal", 120, 70, function(v) 
+        game.workspace.CurrentCamera.FieldOfView = v
+    end)
+
+
+    local misc = Window:NewTab("Misc")
+    local miscSection = misc:NewSection("Misc")
+    miscSection:NewButton("client korblox", "Client Korblox", function ()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/tino12345678/Korblox/main/KORBLOZ"))()
+    end)
+    miscSection:NewButton("Headless", "gives u headless", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/tino12345678/headles/main/headless-cool"))()
+    end)
+
+
+
+
+
+
+    local Teleports = Window:NewTab("Teleports")
+    local TeleportsSection = Teleports:NewSection("Teleports")
+    TeleportsSection:NewButton("Revolver", "teleports you to rev", function()
+        getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-638.75, 18.8500004, -118.175011, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+    end)
+    TeleportsSection:NewButton("Double Shotgun", "tp you to db", function()
+        getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1039.59985, 18.8513641, -256.449951, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+    end)
+    TeleportsSection:NewButton("Tactical Shortgun", "tp you to ts", function()
+        getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(470.877533, 45.1272316, -620.630676, 0.999999821, 0.000604254019, -2.60802135e-08, -0.000604254019, 0.999999821, -8.63220048e-05, -2.60802135e-08, 8.63220048e-05, 1)
+        end)
+    TeleportsSection:NewButton("Food", "tp you to food", function()
+        getgenv().game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-338.352173, 23.6826477, -297.2146, -0.0060598203, -1.03402984e-08, -0.999981582, -1.61653102e-09, 1, -1.03306892e-08, 0.999981582, 1.55389912e-09, -0.0060598203)
+    end)
+    TeleportsSection:NewButton("bank", "tp to bank", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-318.891174, 80.2145309, -257.177429, 0.0479469746, -5.14644114e-08, 0.998850107, -3.12971538e-09, 1, 5.16738901e-08, -0.998850107, -5.60372015e-09, 0.0479469746)
+    end)
+    TeleportsSection:NewButton("RPG", "tp you to rpg", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(139.815933, -22.9016266, -136.737762, 0.0339428484, -7.90177737e-08, 0.999423802, -4.7851227e-08, 1, 8.06884728e-08, -0.999423802, -5.0562452e-08, 0.0339428484)
+    end)
+    TeleportsSection:NewButton("UFO", "tp to ufo", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2.85052466, 132, -736.571106, -0.0460956171, -4.24733706e-08, -0.998937011, 7.26012459e-08, 1, -4.58687275e-08, 0.998937011, -7.46384217e-08, -0.0460956171)
+    end)
+    TeleportsSection:NewButton("admin guns", "Tp to admin guns", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-872.853516, -34.4276848, -538.013306, -0.999724388, -3.9898886e-08, -0.0234765243, -3.9204977e-08, 1, -3.00177518e-08, 0.0234765243, -2.90890814e-08, -0.999724388)
+    end)
+    TeleportsSection:NewButton("Admin guys#2", "tp yo adming guns#2", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-808.708557, -39.6492004, -932.789368, 0.999899805, 2.01343173e-08, -0.0141554065, -2.17800533e-08, 1, -1.16108232e-07, 0.0141554065, 1.16404912e-07, 0.999899805)
+    end)
+
+    local zombie = Window:NewTab("zombie anim")
+    local zombieSection = zombie:NewSection("Zombie anim")
+    zombieSection:NewButton("Zombie animation changer", "changes ur anim to zombie", function()
+        loadstring(game:HttpGet("https://pastebin.com/raw/wVMPVBC0"))()
+    end)
+
+    local farm = Window:NewTab("Auto farm")
+    local farmSection = farm:NewSection("AutoFarm")
+    farmSection:NewButton("Auto farm button", "auto farms for you", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/rapnz/scripts/master/DaHoodFarm.lua"))()
+    end)
+    farmSection:NewButton("Shoe auto farm", "shoe", function()
+        game:GetService("Workspace").MAP.Map["hood kicks"]:Destroy()
+			print("da hood worst autofarm lol")
+			while wait(1) do --make it what u want
+				local descendants = game.Workspace.Ignored.Drop:GetDescendants()
+				for index, descendant in pairs(descendants) do
+					if descendant.Name == "MeshPart" then  
+						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(descendant.Position)
+						game.Players.LocalPlayer.Character.Humanoid.Jump = true
+						wait(1)
+						fireclickdetector(game.Workspace.Ignored.Drop.MeshPart.ClickDetector)
+						wait(1)
+						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Ignored["Clean the shoes on the floor and come to me for cash"].LowerTorso.CFrame
+						fireclickdetector(game:GetService("Workspace").Ignored["Clean the shoes on the floor and come to me for cash"].ClickDetector)
+						wait(1)
+						game.Players.LocalPlayer.Character.Humanoid.Jump = true
+					end
+				end
+			end
+		end)
+
+    local target = Window:NewTab("target")
+    local targetSection = target:NewSection("Target by trustboy")
+    targetSection:NewButton("Target", "target made by trustboy", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/GS21Official/DH-VictimMenu-Script/main/Dh%20VictimMenu%3A%20Script"))()
+    end)
+    local ui = Window:NewTab("Ui settings")
+    local uiSection = ui:NewSection("Ui settings")
+    uiSection:NewKeybind("Close or Open(v)", "v", Enum.KeyCode.V, function()
+        Library:ToggleUI()
+        end)
+
+        local info = Window:NewTab("Info")
+        local infoSection = info:NewSection("INFORMATION")
+        infoSection:NewButton("discord<https://discord.gg/F8JYQf8enz", "DMME", function()
+            game.StarterGui:SetCore("SendNotification",{
+                Title = "Discord";
+                Text = "Discord is discord.gg/F8JYQf8en!";
+                Duration = 1;
+            }
+        )
+            SetClipboard(discord.gg/F8JYQf8enz)
+        end)
+
+        
+    
+
+    
+
+        local credit = Window:NewTab("CREDITS")
+        local creditSection = credit:NewSection("Credits")
+        creditSection:NewButton("Moonsec for obfuscating/.gg/moonsec", "DMME", function()
+            game.StarterGui:SetCore("SendNotification",{
+                Title = "Moonsec";
+                Text = "Moonsec obfuscate";
+                Duration = 1;
+            }
+        )
+            setclipboard(discord.gg/moonsec)
+    end)
+    creditSection:NewButton("TRUST BOY(target) https://discord.io/trustboy", "dME", function()
+        game.StarterGui:SetCore("SendNotification",{
+            Title = "Trustboy";
+            Text = "Targetgui";
+            Duration = 1;
+        }
+    )
+end)
+end
